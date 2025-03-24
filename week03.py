@@ -1,9 +1,8 @@
 def inters(l1, l2):
-    l3 = list()
-    for v in l1:
-        if v in l2:
-            l3.append(v) # 교과서 p.156 list3 코드와 같음
-    return  l3
+    s1 = set(l1)
+    s2 = set(l2)
+    #return  list(s1.intersection(s2)) 밑에 줄과 같은 뜻 = 합집합 ///합집합, 차집합, 교집합 등등 알기
+    return list(s1 & s2)
 
 l1 = [45, 5, 22, 31, 7, 19]
 l2 = [2, 1, 5, 22, 7, 38, 27, 19, 13, 41]
