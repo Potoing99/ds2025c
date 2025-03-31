@@ -20,14 +20,17 @@ class LinkedList:
 
 
     def remove(self,target):
-        if self.head.data == target:
-            self.head = self.head.link
-            return #10,8 을 지울때 -9만 남을때 이용되는 코드임
         current = self.head
+        # if self.head.data == target:
+        if current.data == target:
+            self.head = self.head.link
+            current.link = None
+            return #10,8 을 지울때 -9만 남을때 이용되는 코드임
         previous = None
         while current:
             if current.data == target:
                 previous.link = current.link #중요한 코드임
+                current.link = None
             previous = current
             current = current.link
 
