@@ -4,11 +4,13 @@ class TreeNode:
         self.data = None
         self.right = None
 
+
 def post_order(node):
     if node:
         post_order(node.left)
         post_order(node.right)
         print(node.data, end='->')
+
 
 if __name__ == "__main__":
     numbers = [10, 15, 8, 3, 9]
@@ -38,3 +40,20 @@ if __name__ == "__main__":
     print("BST 구성 완료")
 
     post_order(root)
+
+    find_number = int(input())
+    current = root
+    while True:
+        if find_number == current.data:
+            print(f"{find_number}을(를) 찾았습니다")
+            break
+        elif find_number < current.data:
+            if current.left is None:
+                print(f"{find_number}이(가) 존재하지 않습니다")
+                break
+            current = current.left
+        else:
+            if current.right is None:
+                print(f"{find_number}이(가) 존재하지 않습니다")
+                break
+            current = current.right
