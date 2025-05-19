@@ -17,5 +17,12 @@ def dfs(g, i, visited):
         if g[i][j] == 1 and not visited[j]:
             dfs(g, j, visited)
 
+
+def bfs(g, i, visited):
+    pass
+
 visited_dfs = [0 for _ in range(len(graph))]
-dfs(graph, 4, visited_dfs)
+visited_bfs = [0 for _ in range(len(graph))]
+dfs(graph, 6, visited_dfs)
+print()
+bfs(graph, 6, visited_bfs)  #i = 시작 인덱스 번호
