@@ -1,40 +1,109 @@
-from collections import deque   # bfs (append, popleft)
+class Graph:
+	def __init__ (self, size):
+		self.graph = [[0 for _ in range(size)] for _ in range(size)]
 
-graph = [
-    [0, 1, 1, 0, 0, 0, 0, 0],
-    [1, 0, 0, 1, 0, 0, 0, 0],
-    [1, 0, 0, 1, 0, 0, 0, 0],
-    [0, 1, 1, 0, 1, 1, 1, 0],
-    [0, 0, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0, 0, 1, 0]
-]
+def print_graph(g) :
+	print(' ', end = ' ')
+	for v in range(len(g.graph)) :
+		print(name_ary[v], end =' ')
+	print()
+	for row in range(len(g.graph)) :
+		print(name_ary[row], end =' ')
+		for col in range(len(g.graph)) :
+			print(f"{g.graph[row][col]:2d}", end=' ')
+		print()
+	print()
 
-def dfs(g, i, visited):#깊이 우선 탐색 ==> stack or 재귀함수
-    visited[i] = 1
-    print(chr(ord('A') + i), end=' ')
-    for j in range(len(graph)):
-        if g[i][j] == 1 and not visited[j]:
-            dfs(g, j, visited)#
+def find_vertex(g, find_vtx) :
+	stack = list()
+	visited_ary = list()
+
+	current = 0	# 시작 정점
+	stack.append(current)
+	visited_ary.append(current)
+
+	while stack:
+		next = None
+		for vertex in range(graph_size):
+			if g.graph[current][vertex] != 0:  # 연결되어 있으면
+				if vertex in visited_ary:	# 방문한 적이 있는 정점
+					pass
+				else :			# 방문한 적이 없으면
+					next = vertex  #  다음 정점으로 지정
+					break
+
+		if next is not None:				# 다음에 방문할 정점이 있는 경우
+			current = next
+			stack.append(current)  # push
+			visited_ary.append(current)  # push
+		else :					# 다음에 방문할 정점이 없는 경우
+			current = stack.pop()
+
+	if find_vtx in visited_ary:
+		return True
+	else :
+		return False
 
 
-
-def bfs(g, i, visited):#너비 우선 탐색 ==> 반복문 or queue
-   q = deque([i])
-   visited[i] = 1
-   while q:
-       i = q.popleft()
-       print(chr(ord('A') + i), end = ' ')
-       for j in range(len(graph)):
-           if g[i][j] == 1 and not visited[j]:
-               q.append(j)
-               visited[j] = 1
+g1 = None
+name_ary = ['춘천', '서울', '속초', '대전', '광주', '부산']
+chuncheon, seoul, sokcho, daejeon, gwangju, busan = 0, 1, 2, 3, 4, 5
 
 
-#그래프 그림 그려보면 이해가 빠름 그려보기
-visited_dfs = [0 for _ in range(len(graph))]
-visited_bfs = [0 for _ in range(len(graph))]
-dfs(graph, 4, visited_dfs)
-print()
-bfs(graph, 4, visited_bfs)  #i = 시작 인덱스 번호
+graph_size = 6
+g1 = Graph(graph_size)
+g1.graph[chuncheon][seoul] = 10; g1.graph[chuncheon][sokcho] = 15
+g1.graph[seoul][chuncheon] = 10; g1.graph[seoul][sokcho] = 40; g1.graph[seoul][daejeon] = 11; g1.graph[seoul][gwangju] = 50
+g1.graph[sokcho][chuncheon] = 15; g1.graph[sokcho][seoul] = 40; g1.graph[sokcho][daejeon] = 12
+g1.graph[daejeon][seoul] = 11; g1.graph[daejeon][sokcho] = 12; g1.graph[daejeon][gwangju] = 20; g1.graph[daejeon][busan] = 30
+g1.graph[gwangju][seoul] = 50; g1.graph[gwangju][daejeon] = 20; g1.graph[gwangju][busan] = 25
+g1.graph[busan][daejeon] = 30; g1.graph[busan][gwangju] = 25
+
+print('도시 간 도로 건설을 위한 전체 연결도')
+print_graph(g1)
+
+edge_ary = []  # 결과적으로 2d list
+for i in range(graph_size) :
+	for k in range(graph_size) :
+		if g1.graph[i][k] != 0 :
+			edge_ary.append([g1.graph[i][k], i, k])
+print(edge_ary)
+
+edge_ary.sort(reverse=True)
+print(edge_ary)
+
+new_ary = list()
+for i in range(1, len(edge_ary), 2):
+	new_ary.append(edge_ary[i])
+print(new_ary)
+
+index = 0
+while len(new_ary) > graph_size - 1:	# 간선의 개수가 '정점 개수-1'일 때까지 반복
+	start = new_ary[index][1]
+	end = new_ary[index][2]
+	save_cost = new_ary[index][0]
+
+	g1.graph[start][end] = 0
+	g1.graph[end][start] = 0
+
+	start_reachable = find_vertex(g1, start)
+	end_reachable = find_vertex(g1, end)
+
+	if start_reachable and end_reachable :
+		del new_ary[index]
+	else:
+		g1.graph[start][end] = save_cost
+		g1.graph[end][start] = save_cost
+		index = index + 1
+
+print('최소 비용의 도로 연결도')
+print_graph(g1)
+
+total_cost = 0
+for i in range(graph_size):
+	for k in range(graph_size):
+		if g1.graph[i][k] != 0:
+			total_cost = total_cost + g1.graph[i][k]
+
+total_cost = total_cost // 2
+print(f"최소 비용의 도로 건설 비용 :  {total_cost}")
